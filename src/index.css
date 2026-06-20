@@ -1,0 +1,26 @@
+:root {
+  --page-bg-light: #f4f1ec;
+  --page-bg-dark: #14130f;
+  --page-text-light: #2b2620;
+  --page-text-dark: #efe9e0;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: var(--page-bg-light);
+  color: var(--page-text-light);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+html[data-bingo-theme="dark"],
+html[data-bingo-theme="dark"] body {
+  background: var(--page-bg-dark);
+  color: var(--page-text-dark);
+}

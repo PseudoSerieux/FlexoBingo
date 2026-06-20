@@ -1,0 +1,364 @@
+:root {
+  --bingo-bg: #f4f1ec;
+  --bingo-surface: #ffffff;
+  --bingo-surface-2: #fbf9f5;
+  --bingo-border: #e2dccf;
+  --bingo-border-strong: #cdc4ae;
+  --bingo-text: #2b2620;
+  --bingo-text-muted: #847a68;
+  --bingo-accent: #3b82f6;
+  --bingo-accent-soft: #dbeafe;
+  --bingo-success-bg: #e7f3e3;
+  --bingo-success-border: #7abfa5;
+  --bingo-success-text: #225c41;
+  --bingo-active-bg: #fde9d2;
+  --bingo-active-border: #e3a45f;
+  --bingo-active-text: #8a4f17;
+  --bingo-shadow: 0 2px 6px rgba(60, 45, 25, 0.07);
+  --bingo-shadow-strong: 0 4px 14px rgba(60, 45, 25, 0.12);
+}
+
+[data-bingo-theme="dark"] {
+  --bingo-bg: #1c1a18;
+  --bingo-surface: #25221f;
+  --bingo-surface-2: #2b2722;
+  --bingo-border: #3a3530;
+  --bingo-border-strong: #4d463e;
+  --bingo-text: #efe9e0;
+  --bingo-text-muted: #a89c8a;
+  --bingo-accent: #60a5fa;
+  --bingo-accent-soft: #1e3a8a;
+  --bingo-success-bg: #c28cb9;
+  --bingo-success-border: #bf7aaa;
+  --bingo-success-text: #5c2242;
+  --bingo-active-bg: #519486;
+  --bingo-active-border: #3ab988;
+  --bingo-active-text: #d4e8f3;
+  --bingo-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  --bingo-shadow-strong: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.bingo {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  border-radius: 20px;
+  background: var(--bingo-bg);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: var(--bingo-text);
+  overflow: hidden;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.bingo-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.bingo-size-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bingo-label {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--bingo-text-muted);
+}
+
+.bingo-people-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--bingo-surface-2);
+  border: 1px solid var(--bingo-border);
+}
+
+.bingo-people-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bingo-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--bingo-surface);
+  border: 1.5px solid var(--bingo-border);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bingo-text);
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+  user-select: none;
+}
+
+.bingo-checkbox-label:hover:not(:has(input:disabled)) {
+  background: var(--bingo-accent-soft);
+  border-color: var(--bingo-accent);
+  transform: translateY(-1px);
+}
+
+.bingo-checkbox-label input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--bingo-accent);
+}
+
+.bingo-checkbox-label input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.bingo-checkbox-label:has(input[type="checkbox"]:checked) {
+  background: var(--bingo-active-bg);
+  border-color: var(--bingo-active-border);
+  color: var(--bingo-active-text);
+}
+
+.bingo-size-buttons,
+.bingo-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.bingo-btn {
+  padding: 8px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1.5px solid var(--bingo-border-strong);
+  background: var(--bingo-surface);
+  color: var(--bingo-text);
+  cursor: pointer;
+  box-shadow: var(--bingo-shadow);
+  transition: transform 0.12s ease, background 0.15s ease,
+    border-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.bingo-btn:hover:not(:disabled) {
+  background: var(--bingo-surface-2);
+  box-shadow: var(--bingo-shadow-strong);
+  transform: translateY(-1px);
+}
+
+.bingo-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+}
+
+.bingo-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.bingo-btn.is-active {
+  background: var(--bingo-active-bg);
+  border-color: var(--bingo-active-border);
+  color: var(--bingo-active-text);
+}
+
+.bingo-btn-primary {
+  background: var(--bingo-accent);
+  border-color: var(--bingo-accent);
+  color: #fff8f0;
+}
+
+.bingo-btn-primary:hover:not(:disabled) {
+  background: var(--bingo-accent);
+  filter: brightness(1.08);
+}
+
+.bingo-theme-toggle {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 1.5px solid var(--bingo-border-strong);
+  background: var(--bingo-surface);
+  cursor: pointer;
+  box-shadow: var(--bingo-shadow);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.bingo-theme-toggle:hover {
+  background: var(--bingo-surface-2);
+  transform: rotate(15deg) scale(1.05);
+}
+
+.bingo-grid {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 16px;
+  background: var(--bingo-surface-2);
+  border: 1px solid var(--bingo-border);
+  box-shadow: var(--bingo-shadow);
+  transition: box-shadow 0.2s ease;
+}
+
+.bingo-grid.is-celebrating {
+  animation: bingo-grid-pulse 0.7s ease;
+}
+
+@keyframes bingo-grid-pulse {
+  0% {
+    box-shadow: var(--bingo-shadow);
+  }
+  35% {
+    box-shadow: 0 0 0 6px var(--bingo-active-border);
+  }
+  100% {
+    box-shadow: var(--bingo-shadow);
+  }
+}
+
+.bingo-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1.5px solid var(--bingo-border);
+  background: var(--bingo-surface);
+  color: var(--bingo-text);
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: var(--bingo-shadow);
+  transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease,
+    border-color 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
+  overflow: hidden;
+  word-break: break-word;
+  min-height: 80px;
+}
+
+.bingo-cell:hover:not(.is-disabled):not(.is-checked) {
+  background: var(--bingo-accent-soft);
+  border-color: var(--bingo-accent);
+  transform: translateY(-2px);
+  box-shadow: var(--bingo-shadow-strong);
+}
+
+.bingo-cell:active:not(.is-disabled) {
+  transform: translateY(0) scale(0.96);
+}
+
+.bingo-cell.is-disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.bingo-cell.is-checked {
+  background: var(--bingo-success-bg);
+  border-color: var(--bingo-success-border);
+  color: var(--bingo-success-text);
+  font-weight: 600;
+  animation: bingo-cell-check 0.25s ease;
+}
+
+@keyframes bingo-cell-check {
+  0% {
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.bingo-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.bingo-status {
+  font-size: 13.5px;
+  color: var(--bingo-text-muted);
+  margin: 0;
+}
+
+.bingo-lines-counter {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--bingo-text);
+  margin: 0;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--bingo-active-bg);
+  border: 1px solid var(--bingo-active-border);
+}
+
+.bingo-lines-count {
+  color: var(--bingo-active-text);
+  font-size: 15px;
+}
+
+.bingo-confetti-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.bingo-confetti {
+  position: absolute;
+  top: -10%;
+  font-size: 22px;
+  animation-name: bingo-confetti-fall;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes bingo-confetti-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(420px) rotate(var(--rot));
+    opacity: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .bingo {
+    padding: 1rem;
+    border-radius: 14px;
+  }
+  .bingo-cell {
+    font-size: 11px;
+    padding: 5px;
+  }
+}

@@ -1,0 +1,13 @@
+Demander à claude :
+Un mode nuit généralisé (pas que sur la grille)
+Avoir une option pour mute les sons
+Par défaut être en 4X4
+Agrandir les cases
+Trier les phrases par personnes présentes : mettre des checkbox au dessus de la grille
+5 coches max, partons sur 8 personnes différentes en tout et pour tout
+ & du coup affecter des phrases du JSON aux 8 personnes
+Quand on coche la personne c'est qu'elle est présente donc ses phrases sont sélectionnées pour aller sur la grille
+Certaines phrases peuvent être affectées a plusieurs personnes voir a tous le monde (= aux 8 personnes)
+
+Pour plus tard si multijoueur :
+Ecran défaite sur ceux qui n'ont pas fait 1 ligne
