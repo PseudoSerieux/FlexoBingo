@@ -40,4 +40,8 @@ html[data-bingo-theme="dark"] body {
   body {
     font-size: clamp(12px, 1.2vw, 13px);
   }
+  
+  .bingo-title {
+    display: none !important;
+  }
 }
