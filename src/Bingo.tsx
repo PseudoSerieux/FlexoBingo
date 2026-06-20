@@ -69,14 +69,25 @@ function shuffle<T>(arr: T[]): T[] {
 
 /**
  * Génère un tableau de `size*size` phrases UNIQUES tirées du pool.
- * Aucune répétition n'est jamais introduite : si le pool est plus petit
- * que la grille demandée, la grille est tronquée à la taille du pool
- * (et un avertissement est loggé en dev) plutôt que de dupliquer une
- * phrase.
+ * Les phrases {{FREE_CASE...}} sont utilisées en dernier recours si
+ * le nombre de vraies phrases est insuffisant.
  */
 function generateGrid(size: GridSize, pool: string[]): string[] {
   const needed = size * size;
-  const uniquePool = Array.from(new Set(pool));
+  
+  // Séparer les vraies phrases des FREE_CASE
+  const realPhrases = pool.filter(p => !p.startsWith('{{FREE_CASE'));
+  const freeCases = pool.filter(p => p.startsWith('{{FREE_CASE'));
+  
+  // Utiliser les vraies phrases en priorité
+  let availablePhrases = Array.from(new Set(realPhrases));
+  
+  // Si manque de phrases, ajouter les FREE_CASE en dernier recours
+  if (availablePhrases.length < needed) {
+    availablePhrases = [...availablePhrases, ...freeCases];
+  }
+  
+  const uniquePool = Array.from(new Set(availablePhrases));
 
   if (uniquePool.length < needed && (import.meta as any).env?.DEV) {
     console.warn(
