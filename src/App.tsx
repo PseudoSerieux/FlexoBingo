@@ -5,24 +5,18 @@ export default function App() {
     <div style={{ 
       padding: "clamp(1rem, 5vw, 2rem)"
     }}>
-      <h1 
+      <div 
         className="bingo-title"
         style={{ 
           textAlign: "left", 
-          margin: 0, 
-          paddingLeft: "clamp(1rem, 10vw, 35rem)",
-          fontSize: "clamp(2rem, 8vw, 3.5rem)",
-          fontWeight: "800",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip: "text",
-          letterSpacing: "-0.05em",
-          textShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"
+          marginTop: "clamp(-1rem, -12vw, -3rem)",
+          paddingLeft: "clamp(1rem, 12vw, 35rem)",
+          display: "flex",
+          alignItems: "center"
         }}>
-        FlexObingo
-      </h1>
-      <div style={{ marginTop: "clamp(-5rem, -20vw, -3rem)" }}>
+        <img src="/assets/title_img.png" alt="FlexObingo" style={{ maxHeight: "clamp(3.5rem, 12vw, 15rem)", width: "auto" }} />
+      </div>
+      <div style={{ marginTop: "clamp(-15rem, -12vw, -3rem)" }}>
         <Bingo victorySoundUrl="/legends-never-die.ogg" />
       </div>
     </div>
