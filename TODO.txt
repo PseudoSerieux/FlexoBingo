@@ -1,4 +1,5 @@
 Demander à claude :
+## (Déjà fait) :
 Un mode nuit généralisé (pas que sur la grille)
 Avoir une option pour mute les sons
 Par défaut être en 4X4
@@ -9,5 +10,12 @@ Trier les phrases par personnes présentes : mettre des checkbox au dessus de la
 Quand on coche la personne c'est qu'elle est présente donc ses phrases sont sélectionnées pour aller sur la grille
 Certaines phrases peuvent être affectées a plusieurs personnes voir a tous le monde (= aux 8 personnes)
 
-Pour plus tard si multijoueur :
+## A faire :
+Gestion responsive [OK - a testé déployé]
+Mettre le titre FlexOBingo à gauche & remonter le reste [OK - a testé déployé]
+Bouton de partage de la grille finale à la fin du bingo pour partager sur le discord, enregistrer en png ou jpg etc...
+Typo plus fun [OK - a testé déployé]
+Fond de puant league of legend
+
+## Pour plus tard si multijoueur :
 Ecran défaite sur ceux qui n'ont pas fait 1 ligne
