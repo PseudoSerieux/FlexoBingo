@@ -120,6 +120,7 @@
         "putain 1 hp encore cette pute",
         "Je suis nul à chier",
         "J'en ai marre",
+        "J'en peux plus en fait là",
         "écrit n'importe quoi dans le chat",
         "Vas-y ça me saoule"
       ]
@@ -159,8 +160,8 @@
     "{{FREE_CASE7}}",
     "{{FREE_CASE8}}",
     "{{FREE_CASE9}}",
-    "{{FREE_CASE10}}",
-    "{{FREE_CASE11}}",
-    "{{FREE_CASE12}}"
+    "ça sert à rien",
+    "Y a un 6/7",
+    "Draft diff"
   ]
 }
