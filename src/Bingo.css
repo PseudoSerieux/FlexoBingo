@@ -1,5 +1,5 @@
 :root {
-  --bingo-bg: #f4f1ec;
+  --bingo-bg: rgba(244, 241, 236, 0.8);
   --bingo-surface: #ffffff;
   --bingo-surface-2: #fbf9f5;
   --bingo-border: #e2dccf;
@@ -19,20 +19,20 @@
 }
 
 [data-bingo-theme="dark"] {
-  --bingo-bg: #1c1a18;
+  --bingo-bg: rgba(28, 26, 24, 0.75);
   --bingo-surface: #25221f;
   --bingo-surface-2: #2b2722;
   --bingo-border: #3a3530;
   --bingo-border-strong: #4d463e;
   --bingo-text: #efe9e0;
   --bingo-text-muted: #a89c8a;
-  --bingo-accent: #60a5fa;
-  --bingo-accent-soft: #1e3a8a;
-  --bingo-success-bg: #c28cb9;
-  --bingo-success-border: #bf7aaa;
-  --bingo-success-text: #5c2242;
-  --bingo-active-bg: #519486;
-  --bingo-active-border: #3ab988;
+  --bingo-accent: #9761b8;
+  --bingo-accent-soft: rgba(182, 113, 182, 0.6);
+  --bingo-success-bg: #98b487;
+  --bingo-success-border: #f5f1e6;
+  --bingo-success-text: #f5f1e6;
+  --bingo-active-bg: #494DA4;
+  --bingo-active-border: #6e72b1;
   --bingo-active-text: #d4e8f3;
   --bingo-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   --bingo-shadow-strong: 0 6px 18px rgba(0, 0, 0, 0.45);
@@ -41,7 +41,7 @@
 .bingo {
   position: relative;
   max-width: 600px;
-  margin: 0 auto;
+  margin: -1rem auto 0 22rem;
   padding: clamp(1rem, 4vw, 1.5rem);
   border-radius: clamp(12px, 3vw, 20px);
   background: var(--bingo-bg);
