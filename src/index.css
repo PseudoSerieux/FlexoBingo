@@ -5,6 +5,17 @@
   --page-text-dark: #efe9e0;
 }
 
+/*
+  Reset box-sizing : sans ça, "padding" s'ajoute par-dessus "min-height:
+  100vh" au lieu d'être inclus dedans, ce qui crée un débordement vertical
+  (et donc un scroll) égal à la somme des paddings verticaux de la page.
+*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   margin: 0;
@@ -20,10 +31,11 @@ body {
 }
 
 #root {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 html[data-bingo-theme="dark"],
@@ -44,7 +56,11 @@ html[data-bingo-theme="dark"] body {
   body {
     font-size: clamp(12px, 1.2vw, 13px);
   }
-  
+
+  .app-layout {
+    grid-template-columns: 1fr !important;
+  }
+
   .bingo-title {
     display: none !important;
   }

@@ -41,8 +41,9 @@
 .bingo {
   position: relative;
   max-width: 600px;
-  margin: -1rem auto 0 22rem;
-  padding: clamp(1rem, 4vw, 1.5rem);
+  width: 100%;
+  margin: 0 auto;
+  padding: clamp(0.75rem, 2vh, 1.5rem);
   border-radius: clamp(12px, 3vw, 20px);
   background: var(--bingo-bg);
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
@@ -56,7 +57,7 @@
   align-items: center;
   justify-content: space-between;
   gap: clamp(8px, 2vw, 12px);
-  margin-bottom: clamp(0.8rem, 2vw, 1.25rem);
+  margin-bottom: clamp(0.5rem, 1.5vh, 1.25rem);
   flex-wrap: wrap;
 }
 
@@ -78,7 +79,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 1.5rem;
+  margin-bottom: clamp(0.75rem, 2vh, 1.5rem);
   padding: 12px;
   border-radius: 12px;
   background: var(--bingo-surface-2);
@@ -253,7 +254,23 @@
     border-color 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
   overflow: hidden;
   word-break: break-word;
-  min-height: clamp(60px, 15vw, 80px);
+  min-height: clamp(40px, 7vh, 72px);
+}
+
+/* Grille 5x5 : cellules plus compactes pour éviter tout débordement vertical.
+   On désactive l'aspect-ratio carré (qui forcerait la hauteur à suivre la
+   largeur de colonne) pour pouvoir contrôler la hauteur indépendamment. */
+.bingo-grid-5 {
+  gap: clamp(4px, 1vh, 8px);
+  padding: clamp(6px, 1.2vh, 12px);
+}
+
+.bingo-grid-5 .bingo-cell {
+  aspect-ratio: auto;
+  min-height: clamp(32px, 5.5vh, 60px);
+  max-height: clamp(40px, 7vh, 70px);
+  padding: clamp(4px, 1vh, 10px);
+  font-size: clamp(9px, 1.6vw, 12.5px);
 }
 
 .bingo-cell:hover:not(.is-disabled):not(.is-checked) {
@@ -297,7 +314,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 1rem;
+  margin-top: clamp(0.5rem, 1.5vh, 1rem);
   flex-wrap: wrap;
 }
 
@@ -361,7 +378,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 1rem;
+  margin-top: clamp(0.5rem, 1.5vh, 1rem);
   flex-wrap: wrap;
 }
 
@@ -621,5 +638,49 @@
   .bingo-grid {
     gap: clamp(5px, 1.5vw, 6px);
     padding: clamp(8px, 1.5vw, 10px);
+  }
+}
+
+/*
+  Ecrans bas (peu de hauteur dispo, ex: petits laptops, fenetres non
+  maximisees) : on compacte tout verticalement quelle que soit la largeur,
+  pour garantir qu'aucun scroll n'apparaisse.
+*/
+@media (max-height: 800px) {
+  .bingo {
+    padding: clamp(0.5rem, 1.5vh, 1rem);
+  }
+
+  .bingo-people-selector {
+    padding: 8px;
+    margin-bottom: clamp(0.4rem, 1vh, 0.75rem);
+    gap: 4px;
+  }
+
+  .bingo-checkbox-label {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .bingo-toolbar {
+    margin-bottom: clamp(0.4rem, 1vh, 0.75rem);
+  }
+
+  .bingo-cell {
+    aspect-ratio: auto;
+    min-height: clamp(32px, 5.5vh, 50px);
+    padding: clamp(3px, 0.7vh, 7px);
+    font-size: clamp(9px, 1.6vw, 12px);
+  }
+
+  .bingo-grid-5 .bingo-cell {
+    min-height: clamp(26px, 4vh, 40px);
+    max-height: clamp(30px, 5vh, 46px);
+    padding: clamp(2px, 0.5vh, 5px);
+    font-size: clamp(8px, 1.3vw, 10.5px);
+  }
+
+  .bingo-footer {
+    margin-top: clamp(0.3rem, 1vh, 0.6rem);
   }
 }

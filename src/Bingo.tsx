@@ -476,7 +476,7 @@ export default function Bingo({
         </div>
 
         <div
-          className={`bingo-grid ${celebrating ? "is-celebrating" : ""}`}
+          className={`bingo-grid bingo-grid-${gridSize} ${celebrating ? "is-celebrating" : ""}`}
           style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
         >
           {cells.map((phrase, index) => {
