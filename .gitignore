@@ -10,3 +10,4 @@ dist-ssr
 *.log
 
 TODO.txt
+package-lock.json

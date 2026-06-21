@@ -352,6 +352,206 @@
   }
 }
 
+.bingo-capture-area {
+  display: contents;
+}
+
+.bingo-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.bingo-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.bingo-btn-share {
+  padding: 8px 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1.5px solid var(--bingo-border-strong);
+  background: var(--bingo-accent);
+  border-color: var(--bingo-accent);
+  color: #fff8f0;
+  cursor: pointer;
+  box-shadow: var(--bingo-shadow);
+  transition: transform 0.12s ease, background 0.15s ease, filter 0.15s ease;
+}
+
+.bingo-btn-share:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.bingo-btn-share:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+}
+
+/* Modal de partage */
+.bingo-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.bingo-modal {
+  background: var(--bingo-bg);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+  border: 1px solid var(--bingo-border);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.bingo-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid var(--bingo-border);
+}
+
+.bingo-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--bingo-text);
+}
+
+.bingo-modal-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+.bingo-modal-close:hover {
+  background: var(--bingo-surface-2);
+}
+
+.bingo-modal-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bingo-modal-btn {
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1.5px solid var(--bingo-border-strong);
+  background: var(--bingo-surface);
+  color: var(--bingo-text);
+  cursor: pointer;
+  box-shadow: var(--bingo-shadow);
+  transition: transform 0.12s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bingo-modal-btn:hover:not(:disabled) {
+  background: var(--bingo-surface-2);
+  box-shadow: var(--bingo-shadow-strong);
+  transform: translateY(-2px);
+}
+
+.bingo-modal-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+}
+
+.bingo-modal-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bingo-modal-btn-discord {
+  background: var(--bingo-accent);
+  border-color: var(--bingo-accent);
+  color: #fff8f0;
+}
+
+.bingo-modal-btn-discord:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.bingo-webhook-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--bingo-border);
+}
+
+.bingo-modal-label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bingo-text);
+}
+
+.bingo-webhook-input {
+  padding: 8px 12px;
+  font-size: 12px;
+  border: 1.5px solid var(--bingo-border);
+  border-radius: 8px;
+  background: var(--bingo-surface);
+  color: var(--bingo-text);
+  font-family: "Courier New", monospace;
+  transition: border-color 0.15s ease;
+}
+
+.bingo-webhook-input:focus {
+  outline: none;
+  border-color: var(--bingo-accent);
+  box-shadow: 0 0 0 3px var(--bingo-accent-soft);
+}
+
 @media (max-width: 768px) {
   .bingo {
     max-width: 90vw;
@@ -371,6 +571,19 @@
   .bingo-btn {
     font-size: clamp(12px, 2vw, 13.5px);
     padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
+  }
+
+  .bingo-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bingo-footer-actions {
+    justify-content: center;
+  }
+
+  .bingo-modal {
+    max-width: 95vw;
   }
 }
 

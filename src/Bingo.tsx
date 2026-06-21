@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import phrasesData from "./phrases.json";
+import html2canvas from "html2canvas";
 // @ts-ignore
 import victorySound from "./legends-never-die.ogg";
 // @ts-ignore
@@ -18,11 +19,6 @@ interface BingoProps {
   phrases?: string[];
   /** Taille de grille par défaut */
   defaultSize?: GridSize;
-  /**
-   * URL d'un fichier audio à jouer quand une ligne/colonne/diagonale est
-   * complétée (ex: "/legends-never-die.ogg" placé dans le dossier public).
-   * Si absent, un petit son de victoire est généré avec Web Audio API.
-   */
   victorySoundUrl?: string;
 }
 
@@ -147,6 +143,12 @@ export default function Bingo({
   const [confettiBatch, setConfettiBatch] = useState<Confetti[]>([]);
   const [celebrating, setCelebrating] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [discordWebhook, setDiscordWebhook] = useState<string>(() => {
+    if (typeof window === "undefined") return "";
+    return window.localStorage.getItem("discord-webhook") || "";
+  });
+  const gridCaptureRef = useRef<HTMLDivElement>(null);
 
   const completedLinesRef = useRef<Set<number>>(new Set());
   const confettiIdRef = useRef(0);
@@ -261,6 +263,103 @@ export default function Bingo({
     });
   };
 
+  const captureGridImage = async (): Promise<Blob | null> => {
+    if (!gridCaptureRef.current) return null;
+    try {
+      const canvas = await html2canvas(gridCaptureRef.current, {
+        backgroundColor: null,
+        scale: 2,
+        logging: false,
+      });
+      return new Promise((resolve) => {
+        canvas.toBlob((blob) => resolve(blob), "image/png");
+      });
+    } catch (error) {
+      console.error("Erreur lors de la capture:", error);
+      return null;
+    }
+  };
+
+  const downloadImage = async () => {
+    const blob = await captureGridImage();
+    if (!blob) return;
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `bingo-${new Date().toISOString().slice(0, 10)}.png`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const copyImageToClipboard = async () => {
+    const blob = await captureGridImage();
+    if (!blob) return;
+    try {
+      await navigator.clipboard.write([
+        new ClipboardItem({ "image/png": blob }),
+      ]);
+      alert("Image copiée dans le presse-papiers ! 📋");
+    } catch (error) {
+      console.error("Erreur lors de la copie:", error);
+      alert("Impossible de copier l'image");
+    }
+  };
+
+  const sendToDiscord = async () => {
+    if (!discordWebhook.trim()) {
+      alert(
+        "Veuillez d'abord entrer votre webhook Discord dans le modal de partage."
+      );
+      return;
+    }
+
+    const blob = await captureGridImage();
+    if (!blob) {
+      alert("Erreur lors de la capture de la grille");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("file", blob, "bingo.png");
+      formData.append(
+        "payload_json",
+        JSON.stringify({
+          content: `🎯 Grille Bingo - ${completedLinesCount} ligne(s) complète(s)!\n👥 ${Array.from(
+            selectedPeople
+          )
+            .map((idx) => bingoData.people[idx].name)
+            .join(", ")}`,
+        })
+      );
+
+      const response = await fetch(discordWebhook, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        alert("Grille envoyée sur Discord ! 🎉");
+        setShowShareModal(false);
+      } else {
+        alert("Erreur lors de l'envoi à Discord");
+      }
+    } catch (error) {
+      console.error("Erreur Discord:", error);
+      alert(
+        "Erreur lors de l'envoi à Discord (vérifiez votre webhook et les CORS)"
+      );
+    }
+  };
+
+  const handleWebhookChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newWebhook = e.target.value;
+    setDiscordWebhook(newWebhook);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("discord-webhook", newWebhook);
+    }
+  };
+
   return (
     <div className="bingo">
       {confettiBatch.length > 0 && (
@@ -282,123 +381,125 @@ export default function Bingo({
         </div>
       )}
 
-      <div className="bingo-people-selector">
-        <span className="bingo-label">Personnes présentes (max 5)</span>
-        <div className="bingo-people-checkboxes">
-          {bingoData.people.map((person, idx) => (
-            <label key={idx} className="bingo-checkbox-label">
-              <input
-                type="checkbox"
-                checked={selectedPeople.has(idx)}
-                onChange={(e) => {
-                  const newSelected = new Set(selectedPeople);
-                  if (e.target.checked) {
-                    if (newSelected.size < 5) {
-                      newSelected.add(idx);
+      <div ref={gridCaptureRef} className="bingo-capture-area">
+        <div className="bingo-people-selector">
+          <span className="bingo-label">Personnes présentes (max 5)</span>
+          <div className="bingo-people-checkboxes">
+            {bingoData.people.map((person, idx) => (
+              <label key={idx} className="bingo-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={selectedPeople.has(idx)}
+                  onChange={(e) => {
+                    const newSelected = new Set(selectedPeople);
+                    if (e.target.checked) {
+                      if (newSelected.size < 5) {
+                        newSelected.add(idx);
+                      }
+                    } else {
+                      newSelected.delete(idx);
                     }
-                  } else {
-                    newSelected.delete(idx);
-                  }
-                  setSelectedPeople(newSelected);
-                  setStarted(false);
-                }}
-                disabled={started || (!selectedPeople.has(idx) && selectedPeople.size >= 5)}
-              />
-              <span>{person.name}</span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      <div className="bingo-toolbar">
-        <div className="bingo-size-picker">
-          <span className="bingo-label">Taille</span>
-          <div className="bingo-size-buttons">
-            {([4, 5] as GridSize[]).map((size) => (
-              <button
-                key={size}
-                type="button"
-                className={`bingo-btn ${gridSize === size ? "is-active" : ""}`}
-                disabled={started}
-                onClick={() => handleSizeChange(size)}
-              >
-                {size}x{size}
-              </button>
+                    setSelectedPeople(newSelected);
+                    setStarted(false);
+                  }}
+                  disabled={started || (!selectedPeople.has(idx) && selectedPeople.size >= 5)}
+                />
+                <span>{person.name}</span>
+              </label>
             ))}
           </div>
         </div>
 
-        <div className="bingo-actions">
-          {!started ? (
-            <>
-              <button
-                type="button"
-                className="bingo-btn"
-                onClick={handleShuffleClick}
-              >
-                Mélanger
-              </button>
-              <button
-                type="button"
-                className="bingo-btn bingo-btn-primary"
-                onClick={handleStart}
-                disabled={selectedPeople.size > 5}
-              >
-                Lancer la partie
-              </button>
-            </>
-          ) : (
-            <button type="button" className="bingo-btn" onClick={handleReplay}>
-              Rejouer
-            </button>
-          )}
-          <button
-            type="button"
-            className="bingo-theme-toggle"
-            onClick={() => setIsMuted(!isMuted)}
-            aria-label={isMuted ? "Activer le son" : "Désactiver le son"}
-            title={isMuted ? "Son désactivé" : "Son activé"}
-          >
-            {isMuted ? "🔇" : "🔊"}
-          </button>
-          <button
-            type="button"
-            className="bingo-theme-toggle"
-            onClick={toggleTheme}
-            aria-label={
-              theme === "light" ? "Activer le mode nuit" : "Activer le mode jour"
-            }
-            title={theme === "light" ? "Mode nuit" : "Mode jour"}
-          >
-            {theme === "light" ? "🌙" : "☀️"}
-          </button>
-        </div>
-      </div>
+        <div className="bingo-toolbar">
+          <div className="bingo-size-picker">
+            <span className="bingo-label">Taille</span>
+            <div className="bingo-size-buttons">
+              {([4, 5] as GridSize[]).map((size) => (
+                <button
+                  key={size}
+                  type="button"
+                  className={`bingo-btn ${gridSize === size ? "is-active" : ""}`}
+                  disabled={started}
+                  onClick={() => handleSizeChange(size)}
+                >
+                  {size}x{size}
+                </button>
+              ))}
+            </div>
+          </div>
 
-      <div
-        className={`bingo-grid ${celebrating ? "is-celebrating" : ""}`}
-        style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
-      >
-        {cells.map((phrase, index) => {
-          const isChecked = checked.has(index);
-          return (
+          <div className="bingo-actions">
+            {!started ? (
+              <>
+                <button
+                  type="button"
+                  className="bingo-btn"
+                  onClick={handleShuffleClick}
+                >
+                  Mélanger
+                </button>
+                <button
+                  type="button"
+                  className="bingo-btn bingo-btn-primary"
+                  onClick={handleStart}
+                  disabled={selectedPeople.size > 5}
+                >
+                  Lancer la partie
+                </button>
+              </>
+            ) : (
+              <button type="button" className="bingo-btn" onClick={handleReplay}>
+                Rejouer
+              </button>
+            )}
             <button
-              key={index}
               type="button"
-              className={[
-                "bingo-cell",
-                isChecked ? "is-checked" : "",
-                started ? "" : "is-disabled",
-              ]
-                .filter(Boolean)
-                .join(" ")}
-              onClick={() => toggleCell(index)}
-              disabled={!started}
+              className="bingo-theme-toggle"
+              onClick={() => setIsMuted(!isMuted)}
+              aria-label={isMuted ? "Activer le son" : "Désactiver le son"}
+              title={isMuted ? "Son désactivé" : "Son activé"}
             >
-              {phrase}
+              {isMuted ? "🔇" : "🔊"}
             </button>
-          );
-        })}
+            <button
+              type="button"
+              className="bingo-theme-toggle"
+              onClick={toggleTheme}
+              aria-label={
+                theme === "light" ? "Activer le mode nuit" : "Activer le mode jour"
+              }
+              title={theme === "light" ? "Mode nuit" : "Mode jour"}
+            >
+              {theme === "light" ? "🌙" : "☀️"}
+            </button>
+          </div>
+        </div>
+
+        <div
+          className={`bingo-grid ${celebrating ? "is-celebrating" : ""}`}
+          style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
+        >
+          {cells.map((phrase, index) => {
+            const isChecked = checked.has(index);
+            return (
+              <button
+                key={index}
+                type="button"
+                className={[
+                  "bingo-cell",
+                  isChecked ? "is-checked" : "",
+                  started ? "" : "is-disabled",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                onClick={() => toggleCell(index)}
+                disabled={!started}
+              >
+                {phrase}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="bingo-footer">
@@ -407,14 +508,79 @@ export default function Bingo({
             ? "Choisis ta taille de grille, mélange si besoin, puis lance la partie."
             : `${checked.size} / ${cells.length} cases validées`}
         </p>
-        {started && (
-          <p className="bingo-lines-counter">
-            <span className="bingo-lines-count">{completedLinesCount}</span>
-            {" "}
-            {completedLinesCount === 1 ? "ligne complète" : "lignes complètes"}
-          </p>
-        )}
+        <div className="bingo-footer-actions">
+          {started && (
+            <p className="bingo-lines-counter">
+              <span className="bingo-lines-count">{completedLinesCount}</span>
+              {" "}
+              {completedLinesCount === 1 ? "ligne complète" : "lignes complètes"}
+            </p>
+          )}
+          {started && (
+            <button
+              type="button"
+              className="bingo-btn bingo-btn-share"
+              onClick={() => setShowShareModal(true)}
+              title="Partager la grille"
+            >
+              📤 Partager
+            </button>
+          )}
+        </div>
       </div>
+
+      {showShareModal && (
+        <div className="bingo-modal-overlay" onClick={() => setShowShareModal(false)}>
+          <div className="bingo-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="bingo-modal-header">
+              <h3>📤 Partager ta grille</h3>
+              <button
+                type="button"
+                className="bingo-modal-close"
+                onClick={() => setShowShareModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="bingo-modal-content">
+              <button
+                type="button"
+                className="bingo-modal-btn"
+                onClick={downloadImage}
+              >
+                💾 Télécharger l'image
+              </button>
+              <button
+                type="button"
+                className="bingo-modal-btn"
+                onClick={copyImageToClipboard}
+              >
+                📋 Copier l'image
+              </button>
+              <div className="bingo-webhook-section">
+                <label className="bingo-modal-label">
+                  Webhook Discord (optionnel):
+                  <input
+                    type="password"
+                    value={discordWebhook}
+                    onChange={handleWebhookChange}
+                    placeholder="https://discord.com/api/webhooks/..."
+                    className="bingo-webhook-input"
+                  />
+                </label>
+                <button
+                  type="button"
+                  className="bingo-modal-btn bingo-modal-btn-discord"
+                  onClick={sendToDiscord}
+                  disabled={!discordWebhook.trim()}
+                >
+                  🎮 Envoyer sur Discord
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
