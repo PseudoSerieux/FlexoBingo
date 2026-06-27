@@ -361,7 +361,7 @@ export default function Bingo({
   };
 
   return (
-    <div className="bingo">
+    <div className={`bingo${gridSize === 5 ? " bingo-5x5" : ""}`}>
       {confettiBatch.length > 0 && (
         <div className="bingo-confetti-layer" aria-hidden="true">
           {confettiBatch.map((c) => (
@@ -584,4 +584,3 @@ export default function Bingo({
     </div>
   );
 }
-

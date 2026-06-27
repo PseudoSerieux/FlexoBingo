@@ -40,7 +40,7 @@
 
 .bingo {
   position: relative;
-  max-width: 600px;
+  max-width: 700px;
   width: 100%;
   margin: 0 auto;
   padding: clamp(0.75rem, 2vh, 1.5rem);
@@ -49,7 +49,7 @@
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
   color: var(--bingo-text);
   overflow: hidden;
-  transition: background 0.25s ease, color 0.25s ease;
+  transition: background 0.25s ease, color 0.25s ease, max-width 0.2s ease;
 }
 
 .bingo-toolbar {
@@ -57,7 +57,7 @@
   align-items: center;
   justify-content: space-between;
   gap: clamp(8px, 2vw, 12px);
-  margin-bottom: clamp(0.5rem, 1.5vh, 1.25rem);
+  margin-bottom: clamp(0.8rem, 2vw, 1.25rem);
   flex-wrap: wrap;
 }
 
@@ -79,7 +79,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: clamp(0.75rem, 2vh, 1.5rem);
+  margin-bottom: 1.5rem;
   padding: 12px;
   border-radius: 12px;
   background: var(--bingo-surface-2);
@@ -254,23 +254,26 @@
     border-color 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
   overflow: hidden;
   word-break: break-word;
-  min-height: clamp(40px, 7vh, 72px);
 }
 
-/* Grille 5x5 : cellules plus compactes pour éviter tout débordement vertical.
-   On désactive l'aspect-ratio carré (qui forcerait la hauteur à suivre la
-   largeur de colonne) pour pouvoir contrôler la hauteur indépendamment. */
+/*
+  Grille 5x5 : carte élargie à 700px pour que les 5 colonnes aient assez de
+  place. Pas de max-height/max-width artificiel — aspect-ratio: 1 hérité
+  fait son travail naturellement dans la grille élargie.
+  Gap et padding réduits pour optimiser l'espace vertical.
+*/
+.bingo.bingo-5x5 {
+  max-width: 700px;
+}
+
 .bingo-grid-5 {
-  gap: clamp(4px, 1vh, 8px);
-  padding: clamp(6px, 1.2vh, 12px);
+  gap: clamp(4px, 1vw, 6px);
+  padding: clamp(8px, 1.5vw, 10px);
 }
 
 .bingo-grid-5 .bingo-cell {
-  aspect-ratio: auto;
-  min-height: clamp(32px, 5.5vh, 60px);
-  max-height: clamp(40px, 7vh, 70px);
-  padding: clamp(4px, 1vh, 10px);
-  font-size: clamp(9px, 1.6vw, 12.5px);
+  font-size: clamp(9px, 1.4vw, 12px);
+  padding: clamp(4px, 1vw, 8px);
 }
 
 .bingo-cell:hover:not(.is-disabled):not(.is-checked) {
@@ -314,7 +317,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: clamp(0.5rem, 1.5vh, 1rem);
+  margin-top: 1rem;
   flex-wrap: wrap;
 }
 
@@ -378,7 +381,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: clamp(0.5rem, 1.5vh, 1rem);
+  margin-top: 1rem;
   flex-wrap: wrap;
 }
 
@@ -613,7 +616,6 @@
   .bingo-cell {
     font-size: clamp(9px, 2vw, 11px);
     padding: clamp(6px, 1.5vw, 8px);
-    min-height: clamp(50px, 12vw, 65px);
   }
   
   .bingo-label {
@@ -642,13 +644,14 @@
 }
 
 /*
-  Ecrans bas (peu de hauteur dispo, ex: petits laptops, fenetres non
-  maximisees) : on compacte tout verticalement quelle que soit la largeur,
-  pour garantir qu'aucun scroll n'apparaisse.
+  Ecrans bas (hauteur < 800px) : on réduit le padding vertical et on
+  restreint la largeur de la carte 5x5 pour que les cases soient plus
+  petites (via aspect-ratio naturel) et tout tienne sans scroll.
 */
-@media (max-height: 800px) {
+@media (max-height: 1050px) {
   .bingo {
     padding: clamp(0.5rem, 1.5vh, 1rem);
+    max-width: clamp(320px, 65vh, 600px);
   }
 
   .bingo-people-selector {
@@ -666,18 +669,9 @@
     margin-bottom: clamp(0.4rem, 1vh, 0.75rem);
   }
 
-  .bingo-cell {
-    aspect-ratio: auto;
-    min-height: clamp(32px, 5.5vh, 50px);
-    padding: clamp(3px, 0.7vh, 7px);
-    font-size: clamp(9px, 1.6vw, 12px);
-  }
-
-  .bingo-grid-5 .bingo-cell {
-    min-height: clamp(26px, 4vh, 40px);
-    max-height: clamp(30px, 5vh, 46px);
-    padding: clamp(2px, 0.5vh, 5px);
-    font-size: clamp(8px, 1.3vw, 10.5px);
+  /* 5x5 : carte un peu plus large que 4x4, mais quand même contrainte par vh */
+  .bingo.bingo-5x5 {
+    max-width: clamp(340px, 64vh, 650px);
   }
 
   .bingo-footer {
